@@ -1,6 +1,7 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import basicAuth from 'express-basic-auth';
+import path from 'path';
 import config from '../license.config';
 import LicenseManager from './licenses';
 
@@ -28,6 +29,10 @@ app.post('/generate', adminAuth, (req, res) => {
 app.post('/validate', (req, res) => {
   const userData = LicenseManager.validate(req.body);
   res.json(userData);
+});
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname + '/index.html'));
 });
 
 // @ts-ignore

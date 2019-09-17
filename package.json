@@ -4,7 +4,8 @@
   "description": "A simple license key API for Electron apps",
   "main": "dist/app.js",
   "scripts": {
-    "start": "tsc && cp index.html dist/index.html && node dist/app.js",
+    "start": "npm run build && node dist/app.js",
+    "build": "tsc && cp index.html dist/index.html",
     "test": "jest",
     "coverage": "jest --coverage && open ./coverage/lcov-report/index.html",
     "tsc": "tsc"
@@ -33,9 +34,5 @@
     "tslint-config-airbnb": "^5.11.1",
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "^2.0.1"
-  },
-  "electronLicenseManager": {
-    "salt": "This is some salt!",
-    "auth": "password"
   }
 }
