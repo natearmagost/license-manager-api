@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Examples</title>
+    <meta name="description" content="" />
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+  </head>
+
+  <body style="padding: 20px;">
+    <div style="float:left; width: 360px;">
+      <p>
+        1. Generate a license with jQuery
+      </p>
+      <p><button id="jquery-generate">Generate</button></p>
+      <textarea
+        id="jquery-generate-result"
+        style="width: 250px; height: 260px;"
+      ></textarea>
+    </div>
+    <div style="float:left; width: 360px;">
+      <p>
+        2. Validate a license with jQuery
+      </p>
+      <p><button id="jquery-validate">Validate</button></p>
+      <textarea
+        placeholder="Paste license here..."
+        id="jquery-validate-data"
+        style="width: 250px; height: 260px;"
+      ></textarea>
+    </div>
+    <div style="float:left; width: 360px;">
+      <br /><br />
+      <p>
+        3. Result
+      </p>
+      <textarea
+        id="jquery-validate-result"
+        style="width: 250px; height: 200px;"
+      ></textarea>
+    </div>
+    <div style="clear:both"></div>
+    <hr />
+
+    <div style="float:left; width: 360px;">
+      <p>1. Generate a license with Fetch</p>
+      <p><button id="fetch-generate">Generate</button></p>
+      <textarea
+        id="fetch-generate-result"
+        style="width: 250px; height: 260px;"
+      ></textarea>
+    </div>
+    <div style="float:left; width: 360px;">
+      <p>2. Validate a license with Fetch</p>
+      <p><button id="fetch-validate">Validate</button></p>
+      <textarea
+        placeholder="Paste license here..."
+        id="fetch-validate-data"
+        style="width: 250px; height: 260px;"
+      ></textarea>
+    </div>
+    <div style="float:left; width: 360px;">
+      <br /><br />
+      <p>
+        3. Result
+      </p>
+      <textarea
+        id="fetch-validate-result"
+        style="width: 250px; height: 200px;"
+      ></textarea>
+    </div>
+    <div style="clear:both"></div>
+
+    <hr />
+
+    <div style="float:left; width: 360px;">
+      <p>1. Generate a license with Axios</p>
+      <p><button id="axios-generate">Generate</button></p>
+      <textarea
+        id="axios-generate-result"
+        style="width: 250px; height: 260px;"
+      ></textarea>
+    </div>
+    <div style="float:left; width: 360px;">
+      <p>2. Validate a license with Axios</p>
+      <p><button id="axios-validate">Validate</button></p>
+      <textarea
+        placeholder="Paste license here..."
+        id="axios-validate-data"
+        style="width: 250px; height: 260px;"
+      ></textarea>
+    </div>
+    <div style="float:left; width: 360px;">
+      <br /><br />
+      <p>3. Result</p>
+      <textarea
+        id="axios-validate-result"
+        style="width: 250px; height: 200px;"
+      ></textarea>
+    </div>
+    <div style="clear:both"></div>
+
+    <script>
+      $(document).ready(function() {
+        // jQuery
+        $("#jquery-generate").click(() => {
+          $.ajax({
+            url: "/generate",
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Basic YWRtaW46cGFzc3dvcmQ="
+            },
+            data: JSON.stringify({
+              data: {
+                user: {
+                  name: "Nate",
+                  email: "test@example.com"
+                },
+                expiration: 30,
+                meta: ["Product Name", "Version 1.0.0"]
+              }
+            })
+          }).done(response => {
+            $("#jquery-generate-result").val(response);
+          });
+        });
+        $("#jquery-validate").click(() => {
+          $.ajax({
+            url: "/validate",
+            method: "POST",
+            headers: {
+              "Content-Type": "text/plain"
+            },
+            data: $("#jquery-validate-data").val()
+          }).done(response => {
+            $("#jquery-validate-result").val(JSON.stringify(response));
+          });
+        });
+
+        // Fetch
+        $("#fetch-generate").click(() => {
+          fetch("/generate", {
+            method: "POST",
+            headers: {
+              Authorization: "Basic " + btoa("admin:password"),
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              data: {
+                user: {
+                  name: "Nate",
+                  email: "test@example.com"
+                },
+                expiration: 30,
+                meta: ["Product Name", "Version 1.0.0"]
+              }
+            })
+          })
+            .then(response => response.text())
+            .then(response => {
+              $("#fetch-generate-result").val(response);
+            });
+        });
+        $("#fetch-validate").click(() => {
+          fetch("/validate", {
+            method: "POST",
+            headers: {
+              "Content-Type": "text/plain"
+            },
+            body: $("#fetch-validate-data").val()
+          })
+            .then(response => response.text())
+            .then(response => {
+              $("#fetch-validate-result").val(response);
+            });
+        });
+
+        // Axios
+        $("#axios-generate").click(() => {
+          axios
+            .post(
+              "/generate",
+              {
+                data: {
+                  user: {
+                    name: "Nate",
+                    email: "test@example.com"
+                  },
+                  expiration: 30,
+                  meta: ["Product Name", "Version 1.0.0"]
+                }
+              },
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: "Basic " + btoa("admin:password")
+                }
+              }
+            )
+            .then(response => {
+              $("#axios-generate-result").val(response.data);
+            });
+        });
+        $("#axios-validate").click(() => {
+          axios
+            .post("/validate", $("#axios-validate-data").val(), {
+              headers: { "content-type": "text/plain" }
+            })
+            .then(response => {
+              $("#axios-validate-result").val(JSON.stringify(response.data));
+            });
+        });
+      });
+    </script>
+  </body>
+</html>
